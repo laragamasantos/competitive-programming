@@ -24,42 +24,41 @@ const ll LLINF = 0x3f3f3f3f3f3f3f3f; //escrevemos 3f 8 vezes
 const double PI = acos(-1);
 
 int32_t main(){ sws;
-    int n; cin>>n;
+    int n, max, sum=0; cin>>n>>max;
+    vi dist;
 
     while(n){
-        int qntd; cin>>qntd;
-        int sum = 0;
-        vi seq;
-        vi aux;
-        while(qntd){
-            int aux; cin>>aux;
-            seq.pb(aux);
-            qntd--;
-        }
-
-        //order all negative and positive subsequences
-        aux.push_back(seq[0]);
-        int size = 1, len = seq.size();
-        for(int i=1; i<len; i++){
-            if(seq[i]/abs(seq[i]) == seq[i-1]/abs(seq[i-1])){
-                aux.push_back(seq[i]);
-                size++;
-            } else{
-                sort(aux.begin()+aux.size()-size, aux.end());
-                aux.push_back(seq[i]);
-                size=1;
-            }
-        }
-        sort(aux.begin()+aux.size()-size, aux.end());
-    
-        for(int i=1; i<len; i++){
-            if(aux[i]/abs(aux[i]) != aux[i-1]/abs(aux[i-1]))
-                sum += aux[i-1];
-        }
-        sum += aux[len-1];
-        cout << sum << endl;
+        int aux; cin>>aux;
+        dist.pb(aux);
         n--;
     }
+
+    int size = dist.size();
+
+    if((max-dist[0]) < dist[0]){
+        sum+=(max-dist[0]);
+        dist[0] = (max-dist[0]);
+    } else{
+        sum+=dist[0];
+    }  
+    loop(i,1,size){
+        if(((max-dist[i]) < dist[i]) && ((max-dist[i]) >= dist[i-1])){
+            sum+=(max-dist[i]);
+            dist[i] = (max-dist[i]);
+        } else if(((max-dist[i]) >= dist[i-1]) && dist[i] < dist[i-1]){
+            sum+=(max-dist[i]);
+            dist[i] = (max-dist[i]);
+        } else{
+            if(dist[i] < dist[i-1]){
+                cout << "-1" << endl;
+                return 0;
+            }
+            sum+=dist[i];
+        }
+    }
+
+    cout << sum << endl;
+
     return 0;
 }
 
