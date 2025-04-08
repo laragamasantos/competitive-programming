@@ -83,10 +83,11 @@ int32_t main(){ sws;
             while(plat[pos] > 0){
                 resp[i+dist+aux] = count;
                 plat[pos]--;
+                sum_plat--;
                 aux++;
             }
             i = i+dist+aux-2;
-            sum_plat -= count;
+            //sum_plat -= count;
             count++;
             pos++;
         }
