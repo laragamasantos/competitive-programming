@@ -26,42 +26,34 @@ const double PI = acos(-1);
 const int MAX = 1e6+10;
 
 vector<pair<int,int>> g[MAX];
-vector<int> amg, distOrig, distDest;
+vector<int> amg, distDest;
 
 //vou precisar de dois dijkstras: do ponto inicial 1 até cada amigo
 //e outro do ponto final N até cada amigo
-void dijkstra(int n){
-    priority_queue<pair<int,int>> pq1; //par(distancia, indice do vertice)
-    priority_queue<pair<int,int>> pq2;
+vector<int> dijkstra(int n, int source){
+    priority_queue<pair<int,int>> pq; //par(distancia, indice do vertice)
+    vector<int> dist;
 
-    distOrig[0] = 0;
-    distDest[n-1] = 0;
-    pq1.push(mp(0,0));
-    pq2.push(mp(0,n-1)); //definimos na pq o nó do qual estou partindo na busca
+    loop(i,0,n){
+        dist.pb(INF);
+    }
 
-    while(!pq1.empty()){
-        int d = -pq1.top().ff, u = pq1.top().ss;
-        pq1.pop();
-        if(d > distOrig[u]) continue;
+    dist[source] = 0;
+    pq.push(mp(0,source));//definimos na pq o nó do qual estou partindo na busca
+
+    while(!pq.empty()){
+        int d = -pq.top().ff, u = pq.top().ss;
+        pq.pop();
+        if(d > dist[u]) continue;
         for(auto pv: g[u]){
-            if(distOrig[pv.ff] > distOrig[u] + pv.ss){
-                distOrig[pv.ff] = distOrig[u] + pv.ss;
-                pq1.push(mp(-distOrig[pv.ff], pv.ff));
+            if(dist[pv.ff] > dist[u] + pv.ss){
+                dist[pv.ff] = dist[u] + pv.ss;
+                pq.push(mp(-dist[pv.ff], pv.ff));
             }
         }
     }
 
-    while(!pq2.empty()){
-        int d = -pq2.top().ff, u = pq2.top().ss;
-        pq2.pop();
-        if(d > distDest[u]) continue;
-        for(auto pv: g[u]){
-            if(distDest[pv.ff] > distDest[u] + pv.ss){
-                distDest[pv.ff] = distDest[u] + pv.ss;
-                pq2.push(mp(-distDest[pv.ff], pv.ff));
-            }
-        }
-    }
+    return dist;
 }
 
 int32_t main(){ sws;
@@ -69,8 +61,6 @@ int32_t main(){ sws;
 
     loop(i,0,n){
         amg.pb(0);
-        distOrig.pb(INF);
-        distDest.pb(INF);
     }
 
     loop(i,0,m){
@@ -85,7 +75,8 @@ int32_t main(){ sws;
         amg[a] = 1;
     } 
 
-    dijkstra(n);
+    vi distOrig = dijkstra(n, 0);
+    vi distDest = dijkstra(n, n-1);
 
     int menor;
     loop(i,0,n){
