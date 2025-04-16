@@ -20,12 +20,12 @@ typedef vector<int> vi;
 typedef pair<int,int> pii;
 typedef priority_queue<int, vector<int>, greater<int>> pqi;
 const ll MOD = 1e9+7;
+const int MAX = 1e4+5;
+const int INF = 0x3f3f3f3f; //usado em problemas de prog dinamica
 const ll LLINF = 0x3f3f3f3f3f3f3f3f; //escrevemos 3f 8 vezes
 const double PI = acos(-1);
 
 int32_t main(){ sws;
-
-
+   
     return 0;
 }
-
