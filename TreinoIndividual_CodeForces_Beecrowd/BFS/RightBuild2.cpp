@@ -23,7 +23,7 @@ const ll MOD = 1e9+7;
 const ll LLINF = 0x3f3f3f3f3f3f3f3f; //escrevemos 3f 8 vezes
 const double PI = acos(-1);
 
-const int MAX = 2*1e5+10;
+const int MAX = 2e5+10;
 
 vector<vector<int>> g(MAX);
 vector<bool> visA(MAX);
@@ -102,8 +102,18 @@ int32_t main(){ sws;
 
     bfsA(0,a);
     bfsB(a,b);
+    int tam1 = pathSize(a,b);
 
-    cout << pathSize(a,b) << endl;
+    fill(visA.begin(), visA.end(), false);
+    fill(visB.begin(), visB.end(), false);
+    fill(paiA.begin(), paiA.end(), -1);
+    fill(paiB.begin(), paiB.end(), -1);
+
+    bfsA(0,b);
+    bfsB(b,a);
+    int tam2 = pathSize(b,a);
+
+    cout << min(tam1,tam2) << endl;
 
     return 0;
 }

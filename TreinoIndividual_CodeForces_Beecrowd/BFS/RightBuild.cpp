@@ -20,101 +20,73 @@ typedef vector<int> vi;
 typedef pair<int,int> pii;
 typedef priority_queue<int, vector<int>, greater<int>> pqi;
 const ll MOD = 1e9+7;
+const int MAX = 1e6+5;
+const int INF = 0x3f3f3f3f; //usado em problemas de prog dinamica
 const ll LLINF = 0x3f3f3f3f3f3f3f3f; //escrevemos 3f 8 vezes
 const double PI = acos(-1);
 
-const int MAX = 2e5+10;
-
 vector<vector<int>> g(MAX);
-vector<bool> visA(MAX);
-vector<bool> visB(MAX);
-vector<int> paiA(MAX);
-vector<int> paiB(MAX);
+vector<vector<int>> pai(MAX);
 
-void bfsA(int s, int dest){
+void bfs(int s, int n){
     queue<int> q;
-    q.push(s); visA[s] = 1;
+    vector<int> dist;
+    q.push(s); 
 
-    paiA[s] = s;
+    loop(i,0,n){
+        dist.pb(INF);
+    }
+    dist[s] = 0;
+
+    pai[s].pb(s);
     while(!q.empty()){
         int v = q.front(); q.pop();
 
-        for(auto u : g[v]) {
-            if(!visA[u]){
-                q.push(u); visA[u]=1;
-                paiA[u] = v;
-                if(u == dest){
-                    return;
-                }
+        for(auto u : g[v]){
+            if(dist[u] > dist[v] + 1){ //garante que nao foi visitado e é menor caminho
+                pai[u].pb(v); 
+                dist[u] = dist[v] + 1;
+                q.push(u);
             }
-        }
+            else if(dist[u] == dist[v] + 1){ //outra opção de menor caminho
+                pai[u].pb(v); 
+            }
+        } 
     }
 }
 
-void bfsB(int s, int dest){
-    queue<int> q;
-    q.push(s); visB[s] = 1;
+vector<int> parents(int v){
+    vector<int> ret;
 
-    paiB[s] = s;
-    while(!q.empty()){
-        int v = q.front(); q.pop();
-
-        for(auto u : g[v]) {
-            if(!visB[u]){
-                q.push(u); visB[u]=1;
-                paiB[u] = v;
-                if(u == dest){
-                    return;
-                }
-            }
+    //ret.pb(v);
+    while(pai[v][0]!=v){
+        int tam = pai[v].size();
+        loop(i,0,tam){
+            ret.pb(pai[v][i]);
         }
-    }
-}
-
-int pathSize(int a, int b){
-    set<int> set;
-    if(!visA[a] or !visB[b]) return 0;
-
-    set.insert(a);
-    while(paiA[a] != a){
-        a = paiA[a];
-        set.insert(a);
+        v = pai[v][0];
     }
 
-    set.insert(b);
-    while(paiB[b] != b){
-        b = paiB[b];
-        set.insert(b);
-    }
-
-    return set.size()-1;
+    return ret;
 }
 
 int32_t main(){ sws;
     int n,m,a,b; cin>>n>>m>>a>>b;
 
     loop(i,0,m){
-        int x,y;cin>>x>>y;
-
+        int x,y; cin>>x>>y;
         g[x].pb(y);
         g[y].pb(x);
     }
 
-    bfsA(0,a);
-    bfsB(a,b);
-    int tam1 = pathSize(a,b);
+    bfs(0, n+1);
 
-    fill(visA.begin(), visA.end(), false);
-    fill(visB.begin(), visB.end(), false);
-    fill(paiA.begin(), paiA.end(), -1);
-    fill(paiB.begin(), paiB.end(), -1);
+    vi teste = parents(b);
 
-    bfsA(0,b);
-    bfsB(b,a);
-    int tam2 = pathSize(b,a);
-
-    cout << min(tam1,tam2) << endl;
-
+    loop(i,0,teste.size()){
+        cout << teste[i] << ' ';
+    }
+    cout<<endl;
+    
     return 0;
 }
-
