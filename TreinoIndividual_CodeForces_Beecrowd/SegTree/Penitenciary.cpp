@@ -25,23 +25,39 @@ const int INF = 0x3f3f3f3f; //3f 4 vezes
 const ll LLINF = 0x3f3f3f3f3f3f3f3f; //3f 8 vezes
 const double PI = acos(-1);
 
-vi seg(4*MAX,0);
-vector<pair<int,int>> v;
+vector<pair<int,int>> v(MAX);
+vector<pair<int,int>> seg(4*MAX);
 
-int build(int p, int l, int r){
-    if(l == r) return seg[p] = seg[p]+1;
+pair<int,int> build(int p, int l, int r){
+    if (l == r) return seg[p] = v[l];
     int m = (l+r)/2;
-    return seg[p] = min(build(2*p, l, m), build(2*p+1, m+1, r));
+    pair<int,int> left, right;
+    left = build(2*p, l, m);
+    right = build(2*p+1, m+1, r);
+    return seg[p] = mp(max(left.ff, right.ff), 
+                       min(left.ss, right.ss));
 }
 
-int query(int a, int b, int p, int l, int r, int qntdG, int total){
-    if(b < l or r < a) return 0;
-    if(a <= l and r <= b){
-        if(seg[p] == qntdG) return total = total + r-l+1;
-        else return 0;
-    } 
+pair<int,int> query(int a, int b, int p, int l, int r){
+    if (b < l or r < a) return mp(-INF, INF);
+    if (a <= l and r <= b) return seg[p];
     int m = (l+r)/2;
-    return total = query(a,b,2*p,l,m, qntdG, total) + query(a,b,2*p+1,m+1,r, qntdG, total);
+    pair<int,int> left, right;
+    left = query(a, b, 2*p, l, m);
+    right = query(a, b, 2*p+1, m+1, r);
+    return mp(max(left.ff, right.ff), 
+              min(left.ss, right.ss));
+}
+
+pair<int,int> update(int i, pair<int,int> x, int p, int l, int r){
+    if (i < l or r < i) return seg[p];
+    if (l == r) return seg[p] = x;
+    int m = (l+r)/2;
+    pair<int,int> left, right;
+    left = update(i, x, 2*p, l, m);
+    right = update(i, x, 2*p+1, m+1, r);
+    return seg[p] = mp(max(left.ff, right.ff), 
+                       min(left.ss, right.ss));
 }
 
 int32_t main(){ sws;
@@ -49,22 +65,24 @@ int32_t main(){ sws;
 
     loop(i,0,n){
         int l,r; cin>>l>>r;
-        v.pb(mp(l,r));
-        build(1,l,r);
+        v[i] = mp(l,r);
     }
+    build(1,0,n-1);
 
     loop(i,0,q){
-        char carac; cin>>carac;
+        char type; cin>>type;
 
-        if(carac == 'C'){ //update
-            int ind, l, r; cin>>ind>>l>>r;
-            v[ind] = mp(l,r);
-        } else{ //query
-            int gi, gf; cin>>gi>>gf; gi--; gf--;
-            int qntdG = gf - gi + 1;
-            int total = query(gi, gf, 1, 0, n-1, qntdG, 0);
-            cout << total << endl;
+        if (type == '?'){ //query
+            int a,b; cin>>a>>b; a--; b--;
+            pair<int,int> resp;
+            resp = query(a, b, 1, 0, n-1);
+            cout << max(resp.ss - resp.ff + 1, (long long)0) << endl;
+        } 
+        else { //update
+            int j,a,b; cin>>j>>a>>b; j--;
+            update(j, mp(a,b), 1, 0, n-1);
         }
     }
+   
     return 0;
 }
