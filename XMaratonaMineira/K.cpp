@@ -1,0 +1,54 @@
+#include <bits/stdc++.h>
+using namespace std;
+//alias comp='g++ -std=c++17 -g -O2 -Wall -Wconversion -Wshadow -fsanitize=address,undefined -fno-sanitize-recover -ggdb -o out'
+#define sws std::ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL); //Melhora o desempenho
+#define int long long //Melhor linha de codigo ja escrita
+#define endl "\n" //Evita flush
+#define loop(i,a,n) for(int i=a; i < n; i++)
+#define input(x) for (auto &it : x) cin >> it
+#define pb push_back
+#define all(x) x.begin(), x.end()
+#define ff first
+#define ss second
+#define mp make_pair
+#define TETO(a, b) ((a) + (b-1))/(b)
+#define dbg(x) cout << #x << " = " << x << endl
+#define print(x,y) loop(it,0,y){cout << x[it] << " ";} cout << "\n";
+typedef long long ll;
+typedef long double ld;
+typedef vector<int> vi;
+typedef pair<int,int> pii;
+typedef priority_queue<int, vector<int>, greater<int>> pqi;
+const ll MOD = 1e9+7;
+const int MAX = 1e4+5;
+const ll LLINF = 0x3f3f3f3f3f3f3f3f; //escrevemos 3f 8 vezes
+const double PI = acos(-1);
+
+int32_t main(){ sws;
+    clock_t z = clock();
+
+    int qntd, r=0, g=0, b=0, dist=255*3, totalDist=0, aux1, aux2, aux3;
+    vector<tuple<int,int,int>> input;
+    cin>>qntd;
+    int temp = qntd;
+    while(temp--){
+        cin >> aux1 >> aux2 >> aux3;
+        input.pb(make_tuple(aux1, aux2, aux3));
+    }
+    for(int i=0; i<=255; i++){ //r
+        for(int j=0; j<=255; j++){ //g
+            for(int k=0; k<=255; k++){ //b
+                for(auto& elem : input){
+                    int soma = abs(get<0>(elem)-i)+abs(get<1>(elem)-j)+abs(get<2>(elem)-k);
+                    if(soma < dist){
+                        r=i; g=j; b=k; dist = soma;
+                    }
+                }
+            }
+        }
+    }
+    cerr << fixed << "Run Time : " << ((double)(clock() - z) / CLOCKS_PER_SEC) << endl;
+
+    cout << r << ' ' << g << ' ' << ' ' << b << endl;
+    return 0;
+}
